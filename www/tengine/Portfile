@@ -1,0 +1,124 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+
+name                tengine
+version             3.1.0
+revision            0
+categories          www
+license             BSD
+maintainers         nomaintainer
+
+conflicts           nginx nginx-devel
+
+description         A high performance web server based on Nginx
+long_description    Tengine is a web server originated by Taobao, \
+                    compatible with Nginx, with additional features.
+
+homepage            http://tengine.taobao.org
+
+master_sites        http://tengine.taobao.org/download
+distname            ${name}-${version}
+
+checksums           sha256 64ed7155c0c904ce0fe7199c21b8eb6c2abfc267278fa8af832c0cb781e864dc
+
+depends_lib         port:pcre \
+                    port:openssl \
+                    port:zlib
+
+set nginx_share     ${prefix}/share/${name}
+set nginx_examples  ${nginx_share}/examples
+set nginx_confdir   ${prefix}/etc/${name}
+set nginx_logdir    ${prefix}/var/log/${name}
+set nginx_rundir    ${prefix}/var/run/${name}
+set nginx_pidfile   ${nginx_rundir}/${name}.pid
+set nginx_all_confs {fastcgi.conf fastcgi_params mime.types nginx.conf scgi_params uwsgi_params}
+set auto_activate_confs {nginx.conf mime.types fastcgi.conf}
+
+configure.args-append \
+                    --with-cc-opt=\"${configure.cppflags} ${configure.cflags}\" \
+                    --with-ld-opt=\"${configure.ldflags}\" \
+                    --conf-path=${nginx_confdir}/nginx.conf \
+                    --error-log-path=${nginx_logdir}/error.log \
+                    --http-log-path=${nginx_logdir}/access.log \
+                    --pid-path=${nginx_pidfile} \
+                    --lock-path=${nginx_rundir}/${name}.lock \
+                    --http-client-body-temp-path=${nginx_rundir}/client_body_temp \
+                    --http-proxy-temp-path=${nginx_rundir}/proxy_temp \
+                    --http-fastcgi-temp-path=${nginx_rundir}/fastcgi_temp \
+                    --http-uwsgi-temp-path=${nginx_rundir}/uwsgi_temp \
+                    --http-scgi-temp-path=${nginx_rundir}/scgi_temp \
+                    --with-compat
+
+# pcre2 breaks the lua module (https://trac.macports.org/ticket/65150)
+configure.args-append             --without-pcre2
+
+# remove --disable-dependency-tracking
+configure.universal_args-delete   --disable-dependency-tracking
+
+build.target        build
+destroot.keepdirs   ${destroot}${nginx_logdir} \
+                    ${destroot}${nginx_rundir}
+
+post-destroot {
+    xinstall -d -m 755 ${destroot}${nginx_share}
+    xinstall -d -m 755 ${destroot}${nginx_examples}
+
+    foreach conf ${nginx_all_confs} {
+        set conf_path "${destroot}${nginx_confdir}/${conf}"
+        if {[file exists ${conf_path}]} {
+            file delete ${conf_path}
+        }
+        if {[file exists ${conf_path}.default]} {
+            move ${conf_path}.default ${destroot}${nginx_examples}
+        }
+    }
+
+    file rename ${destroot}${prefix}/html ${destroot}${nginx_share}
+
+    # Install the manpage
+    set man_path "${destroot}${prefix}/share/man/man8"
+    xinstall -d -m 0755 ${man_path}
+    xinstall    -m 0644 ${worksrcpath}/man/nginx.8 ${man_path}
+    reinplace -q "s|/var/run/mytengine.pid|${nginx_pidfile}/|g" ${man_path}/nginx.8
+}
+
+post-activate {
+    foreach conf ${auto_activate_confs} {
+        if {![file exists ${nginx_confdir}/${conf}]} {
+            xinstall -m 644 ${nginx_examples}/${conf}.default ${nginx_confdir}/${conf}
+        }
+    }
+}
+
+startupitem.create      yes
+startupitem.pidfile     auto ${nginx_pidfile}
+startupitem.executable  ${prefix}/sbin/nginx -g "daemon off;"
+
+notes "\
+    A set of sample configuration files has been installed in ${nginx_examples}.\n\n\
+    Additionally, the files [join ${auto_activate_confs} ", "] have been copied to ${nginx_confdir} if they didn't exist yet.\n\
+    Adjust these files to your needs before starting Tengine."
+
+configure.args-append       --prefix=${prefix} \
+                            --with-http_ssl_module \
+                            --with-http_v2_module \
+                            --with-http_realip_module \
+                            --with-http_addition_module \
+                            --with-http_xslt_module \
+                            --with-http_geoip_module \
+                            --with-http_flv_module \
+                            --with-http_mp4_module \
+                            --with-http_gunzip_module \
+                            --with-http_gzip_static_module \
+                            --with-http_auth_request_module \
+                            --with-pcre \
+                            --with-threads \
+                            --with-stream \
+                            --with-stream_ssl_module \
+                            --with-stream_realip_module \
+                            --with-stream_geoip_module \
+                            --with-stream_ssl_preread_module
+
+livecheck.type      regexm
+livecheck.url       ${homepage}/en/download.html
