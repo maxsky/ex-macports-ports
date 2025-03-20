@@ -1,14 +1,12 @@
-# my-macports-ports
-
-
+# ex-macports-ports
 
 # Usage
 
 Edit `/opt/local/etc/macports/sources.conf`:
 
 ```
-# Custom path before [default]
-file:///Users/[Username]/YourPortsPath
+# Custom path must before [default]
+file:///Users/Username/YourPortsPath
 rsync://rsync.macports.org/macports/release/tarballs/ports.tar.gz [default]
 ```
 
