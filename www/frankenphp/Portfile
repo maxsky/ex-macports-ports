@@ -1,0 +1,30 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+
+name                frankenphp
+version             1.5.0
+categories          www php
+platforms           darwin
+maintainers         nomaintainer
+license             MIT
+
+description         FrankenPHP is a modern PHP app server with built-in web server.
+long_description    FrankenPHP is a modern PHP application server and runtime that \
+                    integrates a Go-based web server and PHP runtime into one binary.
+
+homepage            https://frankenphp.dev
+
+master_sites        https://github.com/dunglas/frankenphp/releases/download/v${version}
+distfiles           frankenphp-mac-x86_64
+
+checksums           sha256  d7ad73d7be24e04e22d61edaf008575261d98eb85f995869278f7ed81a091f6a
+
+use_configure       no
+build               {}
+
+destroot {
+    set bindir ${destroot}${prefix}/bin
+    xinstall -d ${bindir}
+    xinstall -m 755 ${distpath}/${distfiles} ${bindir}/frankenphp
+}

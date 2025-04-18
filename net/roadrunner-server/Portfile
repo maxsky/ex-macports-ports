@@ -15,8 +15,8 @@ long_description    High-performance PHP application server, \
 homepage        https://roadrunner.dev
 
 master_sites    https://github.com/roadrunner-server/roadrunner/releases/download/v${version}
-distfiles       roadrunner-${version}-darwin-amd64.zip
 distname        roadrunner-${version}
+distfiles       ${distname}-darwin-amd64.zip
 
 checksums       sha256  6e14f0a8afeb3912ebbf222e36e02240a7bf16aafc70b1408864d5db723f48c0
 
@@ -26,7 +26,8 @@ use_configure   no
 build {}
 
 destroot {
-    xinstall -d ${destroot}${prefix}/bin
-    xinstall ${workpath}/roadrunner-${version}-darwin-amd64/rr ${destroot}${prefix}/bin/roadrunner
-    ln -sf ${prefix}/bin/roadrunner ${destroot}${prefix}/bin/rr
+    set bindir ${destroot}${prefix}/bin
+    xinstall -d ${bindir}
+    xinstall ${workpath}/${distname}-darwin-amd64/rr ${bindir}/roadrunner
+    ln -sf ${prefix}/bin/roadrunner ${bindir}/rr
 }
