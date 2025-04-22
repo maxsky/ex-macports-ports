@@ -3,11 +3,9 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        rabbitmq rabbitmq-server 4.0.7 v
+github.setup        rabbitmq rabbitmq-server 4.1.0 v
 revision            0
-checksums           rmd160  def6916f0cbda62637c49943f4272a1b7e11d3cd \
-                    sha256  926fc05a87f7a0e8211615a92aeff15b5b4a2bc92e46443d19dedc0c99ebd150 \
-                    size    16284232
+checksums           sha256  9a9c6e1c6a36512e596bbea623caa0d25c80c2fae7092d030327301ddaee5aae
 
 categories          net
 platforms           {darwin any}

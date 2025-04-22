@@ -1,0 +1,42 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+
+name                roadrunner-server
+version             2024.3.5
+categories          www php
+platforms           darwin
+maintainers         nomaintainer
+license             MIT
+
+description         High-performance PHP application server
+long_description    High-performance PHP application server, \
+                    process manager written in Go and powered with plugins.
+
+homepage            https://roadrunner.dev
+
+github.setup        roadrunner-server roadrunner ${version} v
+github.tarball_from releases
+
+use_configure       no
+build               {}
+
+if {[exec uname -m] eq "x86_64"} {
+    distname        ${github.project}-${version}-${platforms}-amd64
+
+    checksums       sha256 a36f5116fbe7f2a7d9be7c46aae1f2701017a64f83502129efe8a1cc8950601a
+
+    use_zip         yes
+} else {
+    distname        ${github.project}-${version}-${platforms}-arm64
+
+    checksums       sha256 38341d3d45bffc55a6b83a0eb910bc15626255f7f5fee55b3048df836910d358
+}
+
+destroot {
+    set bindir ${destroot}${prefix}/bin
+    xinstall -d ${bindir}
+    xinstall ${workpath}/${distname}/rr ${bindir}/roadrunner
+    ln -sf ${prefix}/bin/roadrunner ${bindir}/rr
+}
