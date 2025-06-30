@@ -33,7 +33,6 @@ set nginx_logdir    ${prefix}/var/log/${name}
 set nginx_rundir    ${prefix}/var/run/${name}
 set nginx_pidfile   ${nginx_rundir}/${name}.pid
 set nginx_all_confs {fastcgi.conf fastcgi_params mime.types nginx.conf scgi_params uwsgi_params}
-set auto_activate_confs {nginx.conf mime.types fastcgi.conf}
 
 configure.args-append \
                     --with-cc-opt=\"${configure.cppflags} ${configure.cflags}\" \
@@ -84,7 +83,7 @@ post-destroot {
 }
 
 post-activate {
-    foreach conf ${auto_activate_confs} {
+    foreach conf ${nginx_all_confs} {
         if {![file exists ${nginx_confdir}/${conf}]} {
             xinstall -m 644 ${nginx_examples}/${conf}.default ${nginx_confdir}/${conf}
         }
