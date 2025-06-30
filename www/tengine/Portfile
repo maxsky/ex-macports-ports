@@ -96,7 +96,7 @@ startupitem.executable  ${prefix}/sbin/nginx -g "daemon off;"
 
 notes "\
     A set of sample configuration files has been installed in ${nginx_examples}.\n\n\
-    Additionally, the files [join ${auto_activate_confs} ", "] have been copied to ${nginx_confdir} if they didn't exist yet.\n\
+    Additionally, the files [join ${nginx_all_confs} ", "] have been copied to ${nginx_confdir} if they didn't exist yet.\n\
     Adjust these files to your needs before starting Tengine."
 
 configure.args-append       --prefix=${prefix} \
