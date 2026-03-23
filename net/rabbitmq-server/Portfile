@@ -3,9 +3,9 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        rabbitmq rabbitmq-server 4.2.0 v
+github.setup        rabbitmq rabbitmq-server 4.2.5 v
 revision            0
-checksums           sha256  5eaebefc8d2e3e24fe123a38769577f98d2085e56429bc5024fd437e65514c85
+checksums           sha256  1cfce9374e37c56e4efd3831e90c5508a511bae87dbaa95f7bdddd36f71e27aa
 
 categories          net
 platforms           {darwin any}

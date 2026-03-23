@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           github 1.0
 
 name                roadrunner-server
-version             2025.1.4
+version             2025.1.11
 categories          www php
 platforms           darwin
 maintainers         nomaintainer
@@ -22,16 +22,17 @@ github.tarball_from releases
 use_configure       no
 build               {}
 
-if {[exec uname -m] eq "x86_64"} {
-    distname        ${github.project}-${version}-${platforms}-amd64
-
-    checksums       sha256 4ec06ed487084b605911c0eeaa09dfabf9c4494ae906a197b3812b2d4cf97c6f
-
-    use_zip         yes
-} else {
+if {[exec uname -m] eq "arm64"} {
     distname        ${github.project}-${version}-${platforms}-arm64
 
-    checksums       sha256 bbe64014e8372682a8fe282325663d69a6db2882d792c99141a41d04b298cf4c
+    checksums       sha256 bf8fd47d226c559098bfe69f90642c5490b967a074d31f7af4d670b44868eb58
+
+} else {
+    distname        ${github.project}-${version}-${platforms}-amd64
+
+    checksums       sha256 df1799d96e5518fe5fb5ae6ff8b43c40d18d9dbe4b3672af9fb6aebd97ae642f
+
+    use_zip         yes
 }
 
 destroot {

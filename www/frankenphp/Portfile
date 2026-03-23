@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           github 1.0
 
 name                frankenphp
-version             1.9.1
+version             1.12.1
 categories          www php
 platforms           darwin
 maintainers         nomaintainer
@@ -22,14 +22,14 @@ github.tarball_from releases
 use_configure       no
 build               {}
 
-if {[exec uname -m] eq "x86_64"} {
-    distfiles       ${github.project}-mac-x86_64
-
-    checksums       sha256 c9119df407ace14d7716a39a66dc25fc1cea5538740b9fbdcf49ff1431262ac2
-} else {
+if {[exec uname -m] eq "arm64"} {
     distfiles       ${github.project}-mac-arm64
 
-    checksums       sha256 f09a2d3bec4cffaa1f07a0fa00de3b66c8ae9f2a0ebd5493a6d72eb1a3401f4a
+    checksums       sha256 d26935d6ec0db54400aa9086a2619a8e3e74a6ec383728bbae69894415842a35
+} else {
+    distfiles       ${github.project}-mac-x86_64
+
+    checksums       sha256 99d958b3112f14c93957239157981adc234853b49f613bf39023be01333f3c49
 }
 
 destroot {
